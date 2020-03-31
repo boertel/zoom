@@ -18,7 +18,7 @@ fi
 
 MEETING_ID="$(echo "$MEETING_STR" | tr -d "-" | tr -d " ")"
 
-if [[ -z "$MEETING_STR" ]]; then
+if [[ -z "$MEETING_ID" ]]; then
     ZOOM_CMD="/Applications/zoom.us.app"
     ZOOM_URL="not meeting id found"
 else
