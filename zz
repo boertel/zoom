@@ -1,0 +1,33 @@
+#!/bin/bash
+
+ZOOM_PROFILE=~/.zzrc
+
+MEETING_STR="$1"
+OPTION="$2"
+
+if [[ -e $ZOOM_PROFILE && -n "$MEETING_STR" ]]; then
+    EXIST="$(grep "$MEETING_STR" -- $ZOOM_PROFILE | cut -d ":" -f 2)"
+    if [[ -n "$EXIST" ]]; then
+        MEETING_STR=$EXIST
+    fi
+fi
+
+if [[ "$MEETING_STR" == https://zoom.us/j/* ]]; then
+    MEETING_STR=$(echo "$MEETING_STR" | sed -E 's/.*\/j\/([0-9]+).*/\1/g')
+fi
+
+MEETING_ID="$(echo "$MEETING_STR" | tr -d "-" | tr -d " ")"
+
+if [[ -z "$MEETING_STR" ]]; then
+    ZOOM_CMD="/Applications/zoom.us.app"
+    ZOOM_URL="not meeting id found"
+else
+    ZOOM_CMD="zoommtg://zoom.us/join?confno=$MEETING_ID"
+    ZOOM_URL="https://zoom.us/j/$MEETING_ID"
+    if [[ "$OPTION" == "-p" ]]; then
+        echo "$ZOOM_URL" | pbcopy
+    fi
+fi
+
+echo "Opening: $ZOOM_URL"
+open "$ZOOM_CMD"
